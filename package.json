@@ -1,0 +1,23 @@
+{
+  "name": "awrtc_node-webrtc",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "awrtc_signaling": "piranna/awrtc_signaling",
+    "fluent-ffmpeg": "^2.1.2",
+    "unify-config": "^0.6.3",
+    "wrtc": "^0.4.7",
+    "wrtc-to-ffmpeg": "piranna/wrtc-to-ffmpeg"
+  },
+  "config": {
+    "signaling_ws": "ws://95.211.2.242:49152/conferenceapp",
+    "streamName": "Trainer"
+  }
+}
