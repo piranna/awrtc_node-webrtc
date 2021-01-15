@@ -72,6 +72,45 @@ export default function({signaling_ws, streamName})
       console.info('NewConnection:', connectionId)
 
       const recorder = ffmpeg()
+        .on('start' , cmd  => console.log(cmd))
+        .on('stderr', line => console.log(line))
+
+      // // Re-encoding
+      // .complexFilter([
+      //   'split=3[vtemp001][vtemp002]',
+      //   '[vtemp001]scale=960:trunc(ow/a/2)*2[vout001]',
+      //   '[vtemp002]scale=1280:trunc(ow/a/2)*2[vout002]'
+      //   '[vtemp003]scale=1920:trunc(ow/a/2)*2[vout003]'
+      // ])
+
+      // // Playlists
+      // .videoCodec('libx264')
+      // .videoBitrate(2000)
+
+      // .videoCodec('libx264')
+      // .videoBitrate(4000)
+
+      // Master playlist
+      .output('./hls/myVideo_%v.m3u8')
+        .format('hls')
+        .outputOptions([
+          '-c:v:0 libx264', '-b:v:0 4000k',
+
+          // // Playlists
+          // '-map [vout001]', '-c:v:0 libx264', '-b:v:0 1000k',
+          // '-map [vout002]', '-c:v:1 libx264', '-b:v:1 2000k',
+          // '-map [vout003]', '-c:v:1 libx264', '-b:v:1 4000k',
+
+          '-g 6',
+          // '-hls_flags delete_segments',
+          '-hls_time 4',
+          '-hls_playlist_type vod',
+          // `-hls_segment_filename %03d.ts`,
+          // '-hls_base_url http://localhost:8080/'
+          '-master_pl_name myVideo.m3u8',
+          // '-var_stream_map','"v:0 v:1"'
+        ])
+
       let numTracks = 0
 
       // Create PeerConnection
@@ -79,22 +118,11 @@ export default function({signaling_ws, streamName})
 
       peerConnection.addEventListener('track', function({track})
       {
-        input(track).then(function({options, url})
+        input(track, 3).then(function({options, url})
         {
-          console.log('url:', url, options)
           recorder.input(url).inputOptions(options)
 
-          if(++numTracks == 2)
-          {
-            recorder.output('./myVideo.mp4')
-            .on('stderr', (line) => {
-              console.log(line);
-            })
-            .on('start', cmd => {
-              console.log(cmd)
-            })
-            .run()
-          }
+          if(++numTracks === 2) recorder.run()
         })
 
         // switch(track.kind)

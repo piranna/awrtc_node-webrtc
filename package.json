@@ -5,13 +5,14 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "serve --cors hls"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "awrtc_signaling": "piranna/awrtc_signaling",
     "fluent-ffmpeg": "^2.1.2",
+    "serve": "^11.3.2",
     "unify-config": "^0.6.3",
     "wrtc": "^0.4.7",
     "wrtc-to-ffmpeg": "piranna/wrtc-to-ffmpeg"
